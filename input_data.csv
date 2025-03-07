@@ -1,0 +1,6 @@
+groupname;site_country;site_name;site_id;park_id;technology
+USA/New York DC;USA;New York DC;NYC001;PARK123;Linux
+Canada/Toronto DC;Canada;Toronto DC;TOR002;PARK456;Windows
+UK/London DC;UK;London DC;LON003;PARK789;PostgreSQL
+Germany/Berlin DC;Germany;Berlin DC;BER004;PARK012;Nginx
+France/Paris DC;France;Paris DC;PAR005;PARK345;Docker 
