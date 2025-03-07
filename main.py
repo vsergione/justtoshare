@@ -78,20 +78,25 @@ class DataProcessor:
         Update record with new tags
         """
         try:
+            payload = {
+                "jsonrpc": "2.0",
+                "method": "host.update",
+                "params": {
+                    "hostid": record_id,
+                    "tags": updated_tags
+                },
+                "id": 1
+            }
+            logger.info(f"Update request payload: {payload}")
+            
             response = requests.post(
                 f"{self.api_endpoint}",
-                json={
-                    "jsonrpc": "2.0",
-                    "method": "host.update",
-                    "params": {
-                        "hostid": record_id,
-                        "tags": updated_tags
-                    },
-                    "id": 1
-                },
+                json=payload,
                 headers=self.headers
             )
             response.raise_for_status()
+            response_data = response.json()
+            logger.info(f"Update response: {response_data}")
             logger.info(f"Successfully updated record {record_id}")
         except requests.exceptions.RequestException as e:
             logger.error(f"Error updating record {record_id}: {str(e)}")
@@ -154,9 +159,12 @@ def main():
             # Update each record with new tags
             for record in records.get("result", []):
                 # Keep existing tags that aren't in our update list
+                # This line creates a list of existing tags that we want to keep
+                # It filters the record's current tags (record.get("tags", []) gets tags or empty list if none exist)
+                # Only keeps tags whose names are not in update_tag_names list
+                # This preserves any custom tags while allowing us to update our specific ones
                 existing_tags = [tag for tag in record.get("tags", []) 
                                if tag["tag"] not in update_tag_names]
-                
                 # Combine existing and new tags
                 final_tags = existing_tags + new_tags
                 
